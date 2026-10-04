@@ -1,0 +1,203 @@
+/* Palette and typefaces taken from the portfolio deck. */
+:root {
+  --navy: #14213D;   /* cover background */
+  --ivory: #FAF8F4;  /* cover title, slide background */
+  --mist: #DBE3EE;   /* text on navy */
+  --steel: #9FB0C8;  /* labels on navy */
+  --blue: #3A5A8C;   /* accent */
+
+  --serif: "EB Garamond", Garamond, Georgia, "Times New Roman", serif;
+  --sans: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: max(24px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
+    max(24px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  background: var(--navy);
+  color: var(--mist);
+  font-family: var(--sans);
+  font-size: 1rem;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.card {
+  width: 100%;
+  max-width: 520px;
+  display: grid;
+  gap: 36px;
+  padding: 40px 28px 32px;
+  border: 1px solid rgba(159, 176, 200, 0.22);
+  border-radius: 28px;
+  background: rgba(250, 248, 244, 0.035);
+}
+
+/* Identity */
+
+.intro {
+  container-type: inline-size;
+  min-width: 0;
+}
+
+.eyebrow {
+  margin: 0 0 14px;
+  color: var(--steel);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin: 0;
+  color: var(--ivory);
+  font-family: var(--serif);
+  font-size: clamp(2.25rem, 11vw, 4.25rem);
+  font-size: clamp(2.25rem, 18cqi, 4.25rem); /* scales the name to fit on one line */
+  font-weight: 400;
+  line-height: 1.05;
+  white-space: nowrap;
+}
+
+.details {
+  margin: 22px 0 0;
+}
+
+.details > span {
+  display: block;
+  text-wrap: balance;
+}
+
+/* When the degree line can't fit on one row, drop the dash and stack it. */
+@container (max-width: 23rem) {
+  .details .dash {
+    display: none;
+  }
+
+  .details .when {
+    display: block;
+  }
+}
+
+/* Buttons */
+
+.links {
+  display: grid;
+  gap: 14px;
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 60px;
+  padding: 0 24px 0 28px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.button svg {
+  flex: none;
+  width: 22px;
+  height: 22px;
+}
+
+.button--primary {
+  background: var(--ivory);
+  color: var(--navy);
+}
+
+.button--accent {
+  background: var(--blue);
+  color: var(--ivory);
+}
+
+.button--outline {
+  border-color: rgba(159, 176, 200, 0.5);
+  color: var(--ivory);
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--ivory);
+  outline-offset: 3px;
+}
+
+.button:active {
+  transform: scale(0.985);
+}
+
+@media (hover: hover) {
+  .button:hover {
+    transform: translateY(-2px);
+  }
+
+  .button--primary:hover {
+    background: #FFFFFF;
+  }
+
+  .button--accent:hover {
+    background: #4468A0;
+  }
+
+  .button--outline:hover {
+    border-color: var(--steel);
+    background: rgba(250, 248, 244, 0.06);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    transition: none;
+  }
+
+  .button:hover,
+  .button:active {
+    transform: none;
+  }
+}
+
+/* Side-by-side layout on wider screens */
+
+@media (min-width: 700px) {
+  .card {
+    max-width: 920px;
+    grid-template-columns: minmax(0, 1fr) 272px;
+    align-items: center;
+    gap: 40px;
+    padding: 52px 44px;
+    border-radius: 36px;
+  }
+}
+
+@media (min-width: 960px) {
+  .card {
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: 56px;
+    padding: 64px 56px;
+  }
+}
