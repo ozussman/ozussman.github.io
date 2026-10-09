@@ -5,6 +5,7 @@
   --mist: #DBE3EE;   /* text on navy */
   --steel: #9FB0C8;  /* labels on navy */
   --blue: #3A5A8C;   /* accent */
+  --well: #0E182E;   /* recessed background behind the PDF pages */
 
   --serif: "EB Garamond", Garamond, Georgia, "Times New Roman", serif;
   --sans: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -28,7 +29,8 @@ body {
   min-height: 100vh;
   min-height: 100svh;
   display: grid;
-  place-items: center;
+  justify-items: center;
+  align-items: start;
   padding: max(24px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
     max(24px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
   background: var(--navy);
@@ -39,11 +41,17 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/*
+  The card sits where it would if it were vertically centred while closed,
+  but is anchored from the top so it doesn't jump when a viewer expands.
+*/
 .card {
+  --closed-height: 490px;
   width: 100%;
   max-width: 520px;
+  margin-top: max(0px, calc((100svh - var(--closed-height)) / 2 - 24px));
   display: grid;
-  gap: 36px;
+  gap: 14px;
   padding: 40px 28px 32px;
   border: 1px solid rgba(159, 176, 200, 0.22);
   border-radius: 28px;
@@ -55,16 +63,7 @@ body {
 .intro {
   container-type: inline-size;
   min-width: 0;
-}
-
-.eyebrow {
-  margin: 0 0 14px;
-  color: var(--steel);
-  font-size: 0.8125rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  line-height: 1.4;
-  text-transform: uppercase;
+  margin-bottom: 22px;
 }
 
 h1 {
@@ -79,7 +78,7 @@ h1 {
 }
 
 .details {
-  margin: 22px 0 0;
+  margin: 18px 0 0;
 }
 
 .details > span {
@@ -100,11 +99,6 @@ h1 {
 
 /* Buttons */
 
-.links {
-  display: grid;
-  gap: 14px;
-}
-
 .button {
   display: flex;
   align-items: center;
@@ -117,6 +111,7 @@ h1 {
   font-size: 1.0625rem;
   font-weight: 600;
   text-decoration: none;
+  scroll-margin-top: 16px;
   -webkit-tap-highlight-color: transparent;
   transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
 }
@@ -125,6 +120,14 @@ h1 {
   flex: none;
   width: 22px;
   height: 22px;
+}
+
+.chevron {
+  transition: transform 0.2s ease;
+}
+
+.button[aria-expanded="true"] .chevron {
+  transform: rotate(180deg);
 }
 
 .button--primary {
@@ -170,8 +173,123 @@ h1 {
   }
 }
 
+/* Expanding PDF viewers */
+
+.viewer {
+  margin: 0 -14px 8px;
+  padding: 0 10px 10px;
+  border: 1px solid rgba(159, 176, 200, 0.2);
+  border-radius: 22px;
+  background: var(--well);
+  scroll-margin-top: 16px;
+  animation: reveal 0.28s ease;
+}
+
+.viewer[hidden] {
+  display: none;
+}
+
+.viewer__bar {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 -10px;
+  padding: 8px 12px 8px 20px;
+  border-radius: 21px 21px 0 0;
+  background: var(--well);
+}
+
+.viewer__title {
+  margin-right: auto;
+  color: var(--ivory);
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.viewer__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 44px;
+  padding: 0 8px;
+  color: var(--mist);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.viewer__link svg {
+  width: 16px;
+  height: 16px;
+}
+
+.viewer__close {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid rgba(159, 176, 200, 0.4);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ivory);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.viewer__close svg {
+  width: 18px;
+  height: 18px;
+}
+
+.viewer__link:focus-visible,
+.viewer__close:focus-visible {
+  outline: 2px solid var(--ivory);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) {
+  .viewer__link:hover {
+    color: var(--ivory);
+  }
+
+  .viewer__close:hover {
+    border-color: var(--steel);
+    background: rgba(250, 248, 244, 0.08);
+  }
+}
+
+.viewer__pages {
+  display: grid;
+  gap: 10px;
+}
+
+.viewer__pages img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  background: var(--ivory);
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .button {
+  .button,
+  .chevron {
     transition: none;
   }
 
@@ -179,25 +297,60 @@ h1 {
   .button:active {
     transform: none;
   }
+
+  .viewer {
+    animation: none;
+  }
 }
 
-/* Side-by-side layout on wider screens */
+/* Side-by-side layout on wider screens: name on the left, buttons on the right,
+   and an opened viewer spans the full width underneath. */
 
 @media (min-width: 700px) {
   .card {
+    --closed-height: 312px;
     max-width: 920px;
     grid-template-columns: minmax(0, 1fr) 272px;
-    align-items: center;
-    gap: 40px;
+    column-gap: 40px;
+    row-gap: 14px;
     padding: 52px 44px;
     border-radius: 36px;
+  }
+
+  .intro {
+    grid-column: 1;
+    grid-row: 1 / span 3;
+    align-self: center;
+    margin: 0;
+  }
+
+  .button--portfolio {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .button--resume {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  .button--linkedin {
+    grid-column: 2;
+    grid-row: 3;
+  }
+
+  .viewer {
+    grid-column: 1 / -1;
+    grid-row: 4;
+    margin: 22px 0 0;
   }
 }
 
 @media (min-width: 960px) {
   .card {
+    --closed-height: 336px;
     grid-template-columns: minmax(0, 1fr) 320px;
-    gap: 56px;
+    column-gap: 56px;
     padding: 64px 56px;
   }
 }
